@@ -1,92 +1,460 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#07111f">
-<meta name="description" content="JARVIS personal business command centre">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#081321">
+<meta name="description" content="JARVIS — Your personal business command centre.">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icon.svg" type="image/svg+xml">
-<title>JARVIS — Command Centre</title>
+<link rel="icon" href="icon.svg">
+<title>JARVIS | Command Centre</title>
 <style>
-:root{--bg:#07111f;--panel:#0d1b2c;--panel2:#10243a;--line:#1d3852;--cyan:#54d9ff;--blue:#2186c9;--text:#e9f5ff;--muted:#91a9bd;--green:#54d69a;--red:#ff7c87}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#102c46 0,#07111f 55%);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
-header{padding:22px max(18px,calc((100vw - 1100px)/2));border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{display:flex;align-items:center;gap:12px}.orb{width:42px;height:42px;border:2px solid var(--cyan);border-radius:50%;box-shadow:0 0 22px #36cfff66,inset 0 0 15px #36cfff55;display:grid;place-items:center;color:var(--cyan);font-weight:800}
-h1{font-size:20px;letter-spacing:3px;margin:0}.sub{font-size:11px;color:var(--muted);letter-spacing:2px}
-.status{font-size:12px;color:var(--green);border:1px solid #28684f;padding:6px 10px;border-radius:20px}
-main{max-width:1100px;margin:auto;padding:22px 16px 48px}.hero{padding:20px 0 24px}.eyebrow{color:var(--cyan);letter-spacing:2px;font-size:11px;font-weight:700}.hero h2{font-size:clamp(26px,5vw,40px);margin:8px 0}.hero p{color:var(--muted);max-width:650px;line-height:1.6;margin:0}
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}.card{background:linear-gradient(145deg,#102238,#0a1727);border:1px solid var(--line);border-radius:16px;padding:17px;box-shadow:0 10px 30px #0002}.metric{grid-column:span 4}.wide{grid-column:span 8}.half{grid-column:span 6}.full{grid-column:1/-1}
-.card h3{margin:0 0 12px;font-size:15px}.metric .value{font-size:26px;font-weight:750;margin:4px 0}.muted{color:var(--muted);font-size:12px}.cyan{color:var(--cyan)}.green{color:var(--green)}
-nav{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}.tab{background:#0c1b2b;border:1px solid var(--line);color:var(--muted);border-radius:10px;padding:9px 13px;cursor:pointer}.tab.active{color:var(--cyan);border-color:var(--cyan);background:#10304a}
-section.panel{display:none}section.panel.active{display:block}
-input,select,textarea{width:100%;background:#071522;border:1px solid var(--line);border-radius:9px;color:var(--text);padding:11px;font:inherit;margin:5px 0 10px}
-textarea{min-height:82px;resize:vertical}label{font-size:12px;color:var(--muted)}
-button,.btn{background:linear-gradient(100deg,#1477b7,#159fbd);border:0;color:white;border-radius:9px;padding:10px 14px;font-weight:650;cursor:pointer;text-decoration:none;display:inline-block}
-button.secondary{background:#142b40;border:1px solid var(--line);color:var(--text)}button.danger{background:#49232d;border:1px solid #773744}
-.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.row>*{flex:1}.item{border-top:1px solid var(--line);padding:11px 0;display:flex;justify-content:space-between;gap:12px;align-items:center}.item:first-child{border-top:0}.item strong{font-size:14px}.item small{display:block;color:var(--muted);margin-top:3px}
-.empty{color:var(--muted);font-size:13px;padding:10px 0}.notice{border-left:3px solid var(--cyan);padding:10px 12px;background:#10283d;color:#ccecff;border-radius:6px;font-size:13px;line-height:1.5}
-footer{text-align:center;color:var(--muted);font-size:11px;padding:24px}
-@media(max-width:700px){.metric{grid-column:span 6}.wide,.half{grid-column:1/-1}header{padding:16px}.status{font-size:10px}main{padding:16px 12px 36px}}
+:root{--bg:#081321;--panel:#101f32;--panel2:#14263b;--line:#263b52;--text:#edf5ff;--muted:#9aadc2;--cyan:#35d5e8;--green:#42d69b;--red:#ff7272;--yellow:#ffd166}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+header{padding:22px 18px;background:#0c1a2b;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-size:25px;font-weight:800;letter-spacing:3px;color:var(--cyan)}
+.subtitle{font-size:12px;color:var(--muted);margin-top:5px}
+.status{font-size:11px;color:var(--green);border:1px solid #27644f;padding:7px 10px;border-radius:20px}
+nav{display:flex;gap:7px;padding:12px;overflow-x:auto;background:#0b1828;border-bottom:1px solid var(--line)}
+nav button{white-space:nowrap;background:transparent;border:1px solid var(--line);color:var(--muted);padding:10px 13px;border-radius:9px;cursor:pointer}
+nav button.active{background:var(--cyan);color:#061522;border-color:var(--cyan);font-weight:bold}
+main{max-width:1050px;margin:auto;padding:18px}
+.page{display:none}.page.active{display:block}
+h2{font-size:21px;margin:8px 0 5px}
+h3{font-size:15px;margin:0 0 12px}
+.muted{color:var(--muted);font-size:13px;line-height:1.5}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:16px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:16px;margin-bottom:12px}
+.metric{font-size:25px;font-weight:bold;margin-top:9px;overflow-wrap:anywhere}
+.metric-label{font-size:12px;color:var(--muted)}
+.accent{color:var(--cyan)}.positive{color:var(--green)}.negative{color:var(--red)}
+button,.btn{font:inherit}
+.action{background:var(--cyan);color:#061522;border:0;border-radius:8px;padding:11px 14px;font-weight:bold;cursor:pointer}
+.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer}
+.danger{background:#49252c;color:#ffdede;border:1px solid #84404b;border-radius:8px;padding:8px 10px;cursor:pointer}
+input,select,textarea{width:100%;padding:11px;background:#091727;color:var(--text);border:1px solid var(--line);border-radius:8px;margin:6px 0 12px;font:inherit}
+textarea{min-height:90px;resize:vertical}
+label{font-size:12px;color:var(--muted)}
+.formgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.item{padding:13px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item-title{font-weight:bold;margin-bottom:5px}
+.pill{display:inline-block;padding:4px 8px;border-radius:20px;background:#20354c;color:var(--cyan);font-size:11px;margin:3px 4px 3px 0}
+.empty{padding:18px;text-align:center;color:var(--muted);font-size:13px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.task-done{text-decoration:line-through;color:var(--muted)}
+.small{font-size:11px;color:var(--muted)}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:25px}
+hr{border:0;border-top:1px solid var(--line);margin:17px 0}
 </style>
 </head>
 <body>
-<header><div class="brand"><div class="orb">J</div><div><h1>J.A.R.V.I.S.</h1><div class="sub">PERSONAL BUSINESS COMMAND CENTRE</div></div></div><div class="status">● SYSTEM ONLINE</div></header>
-<main>
-<div class="hero"><div class="eyebrow">BUILD 001 · R0 STARTING BUDGET</div><h2>Good to have you here.</h2><p>Your business operations centre is ready. Track your projects, record real income and expenses, organise tasks, and use the AI handoff to work with ChatGPT. Your records stay in this browser on this device.</p></div>
-<nav>
-<button class="tab active" data-tab="overview">Overview</button><button class="tab" data-tab="business">Businesses</button><button class="tab" data-tab="money">Money tracker</button><button class="tab" data-tab="tasks">Tasks</button><button class="tab" data-tab="assistant">AI assistant</button>
+<header>
+ <div>
+  <div class="brand">J.A.R.V.I.S.</div>
+  <div class="subtitle">YOUR PERSONAL BUSINESS COMMAND CENTRE · BUILD 002</div>
+ </div>
+ <div class="status">● SYSTEM READY</div>
+</header>
+
+<nav id="navigation">
+ <button class="active" data-page="overview">Overview</button>
+ <button data-page="business">Business</button>
+ <button data-page="money">Money tracker</button>
+ <button data-page="tasks">Tasks</button>
+ <button data-page="assistant">AI assistant</button>
+ <button data-page="backup">Backup</button>
 </nav>
-<section id="overview" class="panel active">
-<div class="grid">
-<div class="card metric"><div class="muted">RECORDED INCOME</div><div class="value green" id="totalIncome">R0.00</div><div class="muted">Only entries you record</div></div>
-<div class="card metric"><div class="muted">RECORDED EXPENSES</div><div class="value" id="totalExpense">R0.00</div><div class="muted">Keep costs visible</div></div>
-<div class="card metric"><div class="muted">NET RECORDED</div><div class="value cyan" id="netTotal">R0.00</div><div class="muted">Income minus expenses</div></div>
-<div class="card wide"><h3>Business portfolio</h3><div id="overviewBusinesses" class="empty">Add your first business in the Businesses tab.</div></div>
-<div class="card half"><h3>Next actions</h3><div id="overviewTasks" class="empty">Add a task to get started.</div></div>
-<div class="card half"><h3>R0 operating rule</h3><div class="notice">No paid tools, deposits, subscriptions or API plans. Verify every earning opportunity before sharing personal details or paying anyone.</div></div>
-</div></section>
-<section id="business" class="panel">
-<div class="grid"><div class="card half"><h3>Add a business or project</h3><label>Project name</label><input id="bizName" placeholder="e.g. Aura Digital Hub"><label>What does it do?</label><input id="bizDesc" placeholder="Website, affiliate marketing, app..."><button id="addBiz">Add project</button></div><div class="card half"><h3>Your portfolio</h3><div id="businessList" class="empty">No projects added yet.</div></div></div>
+
+<main>
+<section id="overview" class="page active">
+ <h2>Welcome to JARVIS</h2>
+ <p class="muted">Your business operations, money and daily priorities in one place.</p>
+ <div class="grid">
+  <div class="card"><div class="metric-label">BUSINESS PROJECTS</div><div class="metric accent" id="businessCount">0</div></div>
+  <div class="card"><div class="metric-label">RECORDED INCOME</div><div class="metric positive" id="incomeTotal">R0.00</div></div>
+  <div class="card"><div class="metric-label">RECORDED EXPENSES</div><div class="metric negative" id="expenseTotal">R0.00</div></div>
+  <div class="card"><div class="metric-label">NET BALANCE</div><div class="metric" id="netTotal">R0.00</div></div>
+  <div class="card"><div class="metric-label">OPEN TASKS</div><div class="metric accent" id="pendingCount">0</div></div>
+ </div>
+ <div class="card">
+  <h3>Today's command briefing</h3>
+  <p class="muted" id="todayDate"></p>
+  <div id="dailyBriefing"></div>
+ </div>
+ <div class="card">
+  <h3>Quick actions</h3>
+  <div class="row">
+   <button class="action" onclick="showPage('business')">Manage business</button>
+   <button class="secondary" onclick="showPage('money')">Record money</button>
+   <button class="secondary" onclick="showPage('tasks')">Plan tasks</button>
+   <button class="secondary" onclick="showPage('assistant')">Ask AI assistant</button>
+  </div>
+ </div>
 </section>
-<section id="money" class="panel">
-<div class="grid"><div class="card half"><h3>Record a transaction</h3><label>Type</label><select id="moneyType"><option value="income">Income received</option><option value="expense">Expense paid</option></select><label>Amount (ZAR)</label><input id="moneyAmount" type="number" min="0.01" step="0.01" placeholder="0.00"><label>Source / description</label><input id="moneyDesc" placeholder="e.g. Affiliate commission"><label>Date</label><input id="moneyDate" type="date"><button id="addMoney">Save transaction</button></div><div class="card half"><h3>Transaction history</h3><div id="moneyList" class="empty">No transactions recorded yet.</div></div></div>
+
+<section id="business" class="page">
+ <h2>Business portfolio</h2>
+ <p class="muted">Manage your online projects and track what needs attention.</p>
+ <div class="card">
+  <h3>Add a business or project</h3>
+  <form id="businessForm">
+   <label>Business / project name</label>
+   <input id="businessName" required placeholder="Enter project name">
+   <label>Description</label>
+   <textarea id="businessDescription" placeholder="What does this project do?"></textarea>
+   <button class="action" type="submit">+ Add project</button>
+  </form>
+ </div>
+ <div id="businessList" class="card"></div>
 </section>
-<section id="tasks" class="panel">
-<div class="grid"><div class="card half"><h3>Create a task</h3><label>Task</label><input id="taskName" placeholder="e.g. Create 3 Pinterest pins"><label>Due date (optional)</label><input id="taskDate" type="date"><button id="addTask">Add task</button></div><div class="card half"><h3>Task list</h3><div id="taskList" class="empty">No tasks yet.</div></div></div>
+
+<section id="money" class="page">
+ <h2>Money tracker</h2>
+ <p class="muted">Record actual income and expenses. Amounts are in South African rand (ZAR).</p>
+ <div class="grid">
+  <div class="card"><div class="metric-label">INCOME</div><div class="metric positive" id="moneyIncome">R0.00</div></div>
+  <div class="card"><div class="metric-label">EXPENSES</div><div class="metric negative" id="moneyExpense">R0.00</div></div>
+  <div class="card"><div class="metric-label">NET</div><div class="metric" id="moneyNet">R0.00</div></div>
+ </div>
+ <div class="card">
+  <h3>Record a transaction</h3>
+  <form id="transactionForm">
+   <label>Transaction type</label>
+   <select id="transactionType"><option value="income">Income</option><option value="expense">Expense</option></select>
+   <label>Amount (R)</label>
+   <input id="transactionAmount" type="number" min="0.01" step="0.01" required placeholder="0.00">
+   <label>Description</label>
+   <input id="transactionDescription" required placeholder="What was this for?">
+   <label>Date</label>
+   <input id="transactionDate" type="date" required>
+   <button class="action" type="submit">Save transaction</button>
+  </form>
+ </div>
+ <div class="card">
+  <h3>Transaction history</h3>
+  <div id="transactionList"></div>
+ </div>
 </section>
-<section id="assistant" class="panel">
-<div class="grid"><div class="card full"><h3>JARVIS AI handoff</h3><p class="muted">This first version uses ChatGPT as its AI brain. It does not have a paid API connection or independent background access. Tap below to open ChatGPT with a prepared business-assistant prompt.</p><label>What do you want JARVIS to help with?</label><textarea id="aiPrompt" placeholder="e.g. Give me a free, realistic 7-day plan to get my first affiliate sale in South Africa."></textarea><div class="row"><button id="askAI">Open ChatGPT with my command</button><button class="secondary" id="copyPrompt">Copy command</button></div><p class="muted">Never share passwords, banking PINs, one-time codes or card details in an AI prompt.</p></div>
-<div class="card full"><h3>Starter command ideas</h3><div class="row"><button class="secondary starter" data-prompt="Help me make a realistic R0-budget plan to earn my first legitimate money online in South Africa. Give me steps for today.">Find my first income</button><button class="secondary starter" data-prompt="Create a 7-day Pinterest content plan for my Amazon Associates affiliate project. Use free tools only.">Plan affiliate content</button><button class="secondary starter" data-prompt="Review my online business projects and help me choose the next highest-priority free action. Ask me for missing information.">Prioritise my business</button></div></div></div>
+
+<section id="tasks" class="page">
+ <h2>Task manager</h2>
+ <p class="muted">Turn your business goals into manageable daily actions.</p>
+ <div class="card">
+  <h3>Create a task</h3>
+  <form id="taskForm">
+   <label>Task</label>
+   <input id="taskTitle" required placeholder="What needs to be done?">
+   <label>Related project</label>
+   <select id="taskBusiness"><option value="">General task</option></select>
+   <div class="formgrid">
+    <div><label>Priority</label><select id="taskPriority"><option>High</option><option selected>Medium</option><option>Low</option></select></div>
+    <div><label>Due date</label><input id="taskDue" type="date"></div>
+   </div>
+   <button class="action" type="submit">+ Add task</button>
+  </form>
+ </div>
+ <div class="card">
+  <h3>My tasks</h3>
+  <div id="taskList"></div>
+ </div>
 </section>
-</main><footer>JARVIS BUILD 001 · R0 FIRST · YOU STAY IN CONTROL</footer>
+
+<section id="assistant" class="page">
+ <h2>JARVIS AI assistant</h2>
+ <p class="muted">Use ChatGPT as your thinking partner for planning and growing your projects.</p>
+ <div class="card">
+  <h3>Choose a command</h3>
+  <label>What do you want help with?</label>
+  <select id="commandSelect">
+   <option value="Review my business projects and recommend the most practical next actions I can take with R0 budget.">Business strategy</option>
+   <option value="Help me create a realistic daily action plan for my online businesses.">Daily action plan</option>
+   <option value="Help me improve my Amazon Associates and Pinterest affiliate marketing strategy without spending money.">Affiliate marketing</option>
+   <option value="Help me grow Aura Digital Hub using free tools and realistic steps.">Aura Digital Hub</option>
+   <option value="Help me improve my AI wallpaper project using free resources.">AI wallpaper project</option>
+   <option value="Help me review my income and expenses and create a responsible money plan.">Money planning</option>
+   <option value="Help me identify legitimate online earning opportunities available in South Africa that require no upfront payment.">Online income opportunities</option>
+  </select>
+  <label>Additional instructions (optional)</label>
+  <textarea id="extraCommand" placeholder="Add any details or questions..."></textarea>
+  <div class="row">
+   <button class="action" onclick="sendCommand()">Open ChatGPT with command</button>
+   <button class="secondary" onclick="copyCommand()">Copy command</button>
+  </div>
+  <p class="small">JARVIS prepares the command. ChatGPT opens separately; review information before making business or financial decisions.</p>
+ </div>
+ <div class="card">
+  <h3>JARVIS operating principles</h3>
+  <p class="muted">R0 budget. Free tools first. No deposits or activation fees. No guaranteed-income promises. Protect your passwords and private financial information.</p>
+ </div>
+</section>
+
+<section id="backup" class="page">
+ <h2>Data backup and recovery</h2>
+ <p class="muted">Protect your business records. Your records are stored in this browser on this device, not automatically synced to GitHub or your other devices.</p>
+ <div class="card">
+  <h3>Export your records</h3>
+  <p class="muted">Download a JSON backup of your businesses, transactions and tasks.</p>
+  <button class="action" onclick="exportBackup()">Download backup</button>
+ </div>
+ <div class="card">
+  <h3>Restore a backup</h3>
+  <p class="muted">Choose a JARVIS JSON backup file. Restoring replaces the records currently stored in this browser.</p>
+  <input type="file" id="restoreFile" accept=".json,application/json">
+  <button class="secondary" onclick="restoreBackup()">Restore selected backup</button>
+ </div>
+ <div class="card">
+  <h3>Storage information</h3>
+  <p class="muted" id="storageInfo">Checking local storage...</p>
+ </div>
+</section>
+</main>
+
+<footer>JARVIS BUILD 002 · FREE BUSINESS COMMAND CENTRE</footer>
+
 <script>
-const KEY='jarvis_build001_data';
-let data={businesses:[],transactions:[],tasks:[]};
-try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved)data={...data,...saved}}catch(e){}
-const $=id=>document.getElementById(id);
-const money=n=>'R'+Number(n||0).toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2});
-function save(){localStorage.setItem(KEY,JSON.stringify(data));render()}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function render(){
- const inc=data.transactions.filter(x=>x.type==='income').reduce((a,x)=>a+x.amount,0),exp=data.transactions.filter(x=>x.type==='expense').reduce((a,x)=>a+x.amount,0);
- $('totalIncome').textContent=money(inc);$('totalExpense').textContent=money(exp);$('netTotal').textContent=money(inc-exp);
- $('businessList').innerHTML=data.businesses.length?data.businesses.map((b,i)=>`<div class="item"><div><strong>${esc(b.name)}</strong><small>${esc(b.desc||'No description')}</small></div><button class="danger" data-delbiz="${i}">Remove</button></div>`).join(''):'<div class="empty">No projects added yet.</div>';
- $('overviewBusinesses').innerHTML=data.businesses.length?data.businesses.map(b=>`<div class="item"><strong>${esc(b.name)}</strong><span class="muted">${esc(b.desc||'Project')}</span></div>`).join(''):'Add your first business in the Businesses tab.';
- $('moneyList').innerHTML=data.transactions.length?[...data.transactions].reverse().map((t,ri)=>{let i=data.transactions.length-1-ri;return `<div class="item"><div><strong>${esc(t.desc)}</strong><small>${esc(t.date)} · ${t.type==='income'?'Income':'Expense'}</small></div><span class="${t.type==='income'?'green':''}">${t.type==='income'?'+':'−'}${money(t.amount)}</span><button class="danger" data-deltx="${i}">×</button></div>`}).join(''):'<div class="empty">No transactions recorded yet.</div>';
- $('taskList').innerHTML=data.tasks.length?data.tasks.map((t,i)=>`<div class="item"><div><strong style="${t.done?'text-decoration:line-through;color:#91a9bd':''}">${esc(t.name)}</strong><small>${esc(t.date||'No due date')}</small></div><button class="secondary" data-donetask="${i}">${t.done?'Undo':'Done'}</button><button class="danger" data-deltask="${i}">×</button></div>`).join(''):'<div class="empty">No tasks yet.</div>';
- const pending=data.tasks.filter(t=>!t.done).slice(0,4);$('overviewTasks').innerHTML=pending.length?pending.map(t=>`<div class="item"><strong>${esc(t.name)}</strong><small>${esc(t.date||'')}</small></div>`).join(''):'No pending tasks. Add one in the Tasks tab.';
+const KEY = 'jarvis_build001_data';
+
+function todayLocal(){
+ const d=new Date();
+ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
-document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab,.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active')}));
-$('addBiz').onclick=()=>{let name=$('bizName').value.trim();if(!name)return alert('Enter a project name.');data.businesses.push({name,desc:$('bizDesc').value.trim()});$('bizName').value='';$('bizDesc').value='';save()};
-$('addMoney').onclick=()=>{let amount=Number($('moneyAmount').value),desc=$('moneyDesc').value.trim();if(!(amount>0)||!desc)return alert('Enter a valid amount and description.');data.transactions.push({type:$('moneyType').value,amount,desc,date:$('moneyDate').value||new Date().toISOString().slice(0,10)});$('moneyAmount').value='';$('moneyDesc').value='';save()};
-$('addTask').onclick=()=>{let name=$('taskName').value.trim();if(!name)return alert('Enter a task.');data.tasks.push({name,date:$('taskDate').value,done:false});$('taskName').value='';save()};
-document.addEventListener('click',e=>{let t=e.target;if(t.dataset.delbiz!==undefined){data.businesses.splice(+t.dataset.delbiz,1);save()}if(t.dataset.deltx!==undefined){data.transactions.splice(+t.dataset.deltx,1);save()}if(t.dataset.deltask!==undefined){data.tasks.splice(+t.dataset.deltask,1);save()}if(t.dataset.donetask!==undefined){let x=data.tasks[+t.dataset.donetask];x.done=!x.done;save()}});
-function promptText(){return 'You are JARVIS, my practical business assistant. I am in South Africa and my starting budget is R0. Use free resources only; do not recommend deposits, paid subscriptions, paid APIs or guaranteed-income schemes. Give clear, realistic, step-by-step help. My command: '+$('aiPrompt').value.trim()}
-$('askAI').onclick=()=>{if(!$('aiPrompt').value.trim())return alert('Type a command first.');window.open('https://chatgpt.com/?q='+encodeURIComponent(promptText()),'_blank','noopener')};
-$('copyPrompt').onclick=async()=>{if(!$('aiPrompt').value.trim())return alert('Type a command first.');try{await navigator.clipboard.writeText(promptText());alert('Command copied.')}catch(e){alert('Clipboard not available. You can select and copy the text manually.')}};
-document.querySelectorAll('.starter').forEach(b=>b.onclick=()=>{$('aiPrompt').value=b.dataset.prompt});
-if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+function loadData(){
+ try{
+  const saved=JSON.parse(localStorage.getItem(KEY));
+  if(saved && Array.isArray(saved.businesses) && Array.isArray(saved.transactions) && Array.isArray(saved.tasks)){
+   return saved;
+  }
+ }catch(e){}
+ return {businesses:[],transactions:[],tasks:[]};
+}
+let data=loadData();
+
+if(data.businesses.length===0){
+ data.businesses=[
+  {id:makeId(),name:'Amazon Associates',description:'Affiliate marketing and product recommendations'},
+  {id:makeId(),name:'Pinterest Marketing',description:'Content, pins, traffic and audience growth'},
+  {id:makeId(),name:'Aura Digital Hub',description:'Free online business hub and digital presence'},
+  {id:makeId(),name:'AI Wallpaper Project',description:'AI wallpaper app, engagement and monetisation'}
+ ];
+ saveData();
+}
+
+function makeId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function saveData(){
+ try{
+  localStorage.setItem(KEY,JSON.stringify(data));
+  return true;
+ }catch(e){
+  alert('JARVIS could not save your records. Your browser storage may be full or unavailable. Export a backup if possible.');
+  return false;
+ }
+}
+function esc(value){
+ return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function money(value){
+ return new Intl.NumberFormat('en-ZA',{style:'currency',currency:'ZAR'}).format(Number(value)||0);
+}
+function showPage(id){
+ document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
+ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+ render();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+
+document.getElementById('businessForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const name=document.getElementById('businessName').value.trim();
+ const description=document.getElementById('businessDescription').value.trim();
+ if(!name)return;
+ data.businesses.push({id:makeId(),name,description});
+ saveData();e.target.reset();render();
+});
+
+function deleteBusiness(id){
+ if(!confirm('Delete this project? Related tasks will remain.'))return;
+ data.businesses=data.businesses.filter(b=>b.id!==id);
+ saveData();render();
+}
+function renderBusinesses(){
+ const el=document.getElementById('businessList');
+ el.innerHTML=data.businesses.length?data.businesses.map(b=>`
+ <div class="item">
+  <div class="row"><div class="item-title">${esc(b.name)}</div><button class="danger" onclick="deleteBusiness('${esc(b.id)}')">Delete</button></div>
+  <div class="muted">${esc(b.description||'No description added yet.')}</div>
+ </div>`).join(''):'<div class="empty">No projects yet. Add your first project above.</div>';
+ const select=document.getElementById('taskBusiness');
+ const current=select.value;
+ select.innerHTML='<option value="">General task</option>'+data.businesses.map(b=>`<option value="${esc(b.id)}">${esc(b.name)}</option>`).join('');
+ select.value=current;
+}
+
+document.getElementById('transactionDate').value=todayLocal();
+document.getElementById('transactionForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const amount=Number(document.getElementById('transactionAmount').value);
+ const description=document.getElementById('transactionDescription').value.trim();
+ if(!Number.isFinite(amount)||amount<=0||!description)return;
+ data.transactions.push({
+  id:makeId(),
+  type:document.getElementById('transactionType').value,
+  amount,
+  description,
+  date:document.getElementById('transactionDate').value||todayLocal()
+ });
+ saveData();e.target.reset();document.getElementById('transactionDate').value=todayLocal();render();
+});
+function deleteTransaction(id){
+ if(!confirm('Delete this transaction?'))return;
+ data.transactions=data.transactions.filter(t=>t.id!==id);
+ saveData();render();
+}
+function renderMoney(){
+ const income=data.transactions.filter(t=>t.type==='income').reduce((s,t)=>s+Number(t.amount||0),0);
+ const expense=data.transactions.filter(t=>t.type==='expense').reduce((s,t)=>s+Number(t.amount||0),0);
+ const net=income-expense;
+ ['incomeTotal','moneyIncome'].forEach(id=>document.getElementById(id).textContent=money(income));
+ ['expenseTotal','moneyExpense'].forEach(id=>document.getElementById(id).textContent=money(expense));
+ ['netTotal','moneyNet'].forEach(id=>{
+  const el=document.getElementById(id);el.textContent=money(net);
+  el.className='metric '+(net<0?'negative':'positive');
+ });
+ const sorted=[...data.transactions].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+ document.getElementById('transactionList').innerHTML=sorted.length?sorted.map(t=>`
+ <div class="item row">
+  <div><div class="item-title">${esc(t.description)}</div><div class="small">${esc(t.date)} · ${t.type==='income'?'Income':'Expense'}</div></div>
+  <div class="row"><strong class="${t.type==='income'?'positive':'negative'}">${t.type==='income'?'+':'−'}${money(t.amount)}</strong><button class="danger" onclick="deleteTransaction('${esc(t.id)}')">Delete</button></div>
+ </div>`).join(''):'<div class="empty">No transactions recorded yet.</div>';
+}
+
+document.getElementById('taskForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const title=document.getElementById('taskTitle').value.trim();
+ if(!title)return;
+ data.tasks.push({
+  id:makeId(),title,
+  businessId:document.getElementById('taskBusiness').value,
+  priority:document.getElementById('taskPriority').value,
+  due:document.getElementById('taskDue').value,
+  done:false
+ });
+ saveData();e.target.reset();render();
+});
+function toggleTask(id){
+ const task=data.tasks.find(t=>t.id===id);
+ if(task)task.done=!task.done;
+ saveData();render();
+}
+function deleteTask(id){
+ if(!confirm('Delete this task?'))return;
+ data.tasks=data.tasks.filter(t=>t.id!==id);
+ saveData();render();
+}
+function businessName(id){
+ const b=data.businesses.find(x=>x.id===id);
+ return b?b.name:'General';
+}
+function renderTasks(){
+ const sorted=[...data.tasks].sort((a,b)=>Number(a.done)-Number(b.done));
+ document.getElementById('taskList').innerHTML=sorted.length?sorted.map(t=>`
+ <div class="item">
+  <div class="row">
+   <div style="flex:1">
+    <div class="item-title ${t.done?'task-done':''}">${esc(t.title)}</div>
+    <span class="pill">${esc(t.priority||'Medium')} priority</span>
+    <span class="pill">${esc(businessName(t.businessId))}</span>
+    ${t.due?`<span class="pill">Due ${esc(t.due)}</span>`:''}
+    ${t.done?'<span class="pill">Completed</span>':''}
+   </div>
+   <div class="row"><button class="secondary" onclick="toggleTask('${esc(t.id)}')">${t.done?'Undo':'Complete'}</button><button class="danger" onclick="deleteTask('${esc(t.id)}')">Delete</button></div>
+  </div>
+ </div>`).join(''):'<div class="empty">No tasks yet. Add one above to get started.</div>';
+}
+
+function renderOverview(){
+ document.getElementById('businessCount').textContent=data.businesses.length;
+ const income=data.transactions.filter(t=>t.type==='income').reduce((s,t)=>s+Number(t.amount||0),0);
+ const expense=data.transactions.filter(t=>t.type==='expense').reduce((s,t)=>s+Number(t.amount||0),0);
+ document.getElementById('incomeTotal').textContent=money(income);
+ document.getElementById('expenseTotal').textContent=money(expense);
+ const net=document.getElementById('netTotal');net.textContent=money(income-expense);net.className='metric '+(income-expense<0?'negative':'positive');
+ const pending=data.tasks.filter(t=>!t.done);
+ document.getElementById('pendingCount').textContent=pending.length;
+ document.getElementById('todayDate').textContent=new Date().toLocaleDateString('en-ZA',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+ const today=todayLocal();
+ const due=pending.filter(t=>t.due && t.due<=today);
+ let html='';
+ if(due.length){
+  html='<p class="muted">Tasks due today or overdue:</p>'+due.slice(0,5).map(t=>`<div class="item">• ${esc(t.title)} <span class="small">(${esc(t.priority||'Medium')})</span></div>`).join('');
+ }else if(pending.length){
+  html='<p class="muted">Your next open tasks:</p>'+pending.slice(0,4).map(t=>`<div class="item">• ${esc(t.title)}</div>`).join('');
+ }else{
+  html='<p class="muted">No open tasks. Add a task to plan your next business action.</p>';
+ }
+ document.getElementById('dailyBriefing').innerHTML=html;
+}
+function renderBackup(){
+ document.getElementById('storageInfo').textContent=
+ 'Businesses: '+data.businesses.length+' · Transactions: '+data.transactions.length+' · Tasks: '+data.tasks.length+'. Stored locally in this browser.';
+}
+function render(){
+ renderOverview();renderBusinesses();renderMoney();renderTasks();renderBackup();
+}
+
+function getCommand(){
+ return document.getElementById('commandSelect').value+
+ (document.getElementById('extraCommand').value.trim()?'\n\nAdditional instructions: '+document.getElementById('extraCommand').value.trim():'')+
+ '\n\nPlease keep the advice practical, honest and within a R0 starting budget in South Africa. Use free tools and do not recommend deposits, paid subscriptions or guaranteed-income schemes.';
+}
+function copyCommand(){
+ const text=getCommand();
+ if(navigator.clipboard && navigator.clipboard.writeText){
+  navigator.clipboard.writeText(text).then(()=>alert('JARVIS command copied.')).catch(()=>fallbackCopy(text));
+ }else fallbackCopy(text);
+}
+function fallbackCopy(text){
+ const box=document.createElement('textarea');box.value=text;document.body.appendChild(box);box.select();
+ try{document.execCommand('copy');alert('JARVIS command copied.')}catch(e){alert('Copy was not available. Please select and copy the command manually.')}
+ box.remove();
+}
+function sendCommand(){
+ const url='https://chatgpt.com/?q='+encodeURIComponent(getCommand());
+ window.open(url,'_blank','noopener');
+}
+
+function exportBackup(){
+ const backup={app:'JARVIS',version:2,exportedAt:new Date().toISOString(),businesses:data.businesses,transactions:data.transactions,tasks:data.tasks};
+ const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement('a');a.href=url;a.download='jarvis-backup-'+todayLocal()+'.json';a.click();
+ URL.revokeObjectURL(url);
+}
+function restoreBackup(){
+ const file=document.getElementById('restoreFile').files[0];
+ if(!file){alert('Please choose a backup file first.');return;}
+ const reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   const backup=JSON.parse(reader.result);
+   if(!backup||!Array.isArray(backup.businesses)||!Array.isArray(backup.transactions)||!Array.isArray(backup.tasks)){
+    throw new Error('This is not a valid JARVIS backup.');
+   }
+   if(!confirm('Restore this backup? Your current JARVIS records will be replaced.'))return;
+   data={businesses:backup.businesses,transactions:backup.transactions,tasks:backup.tasks};
+   if(saveData()){alert('Backup restored successfully.');render();}
+  }catch(err){alert('Could not restore backup: '+err.message);}
+ };
+ reader.readAsText(file);
+}
+
 render();
+if('serviceWorker' in navigator){
+ window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
 </script>
-</body></html>
+</body>
+</html>
