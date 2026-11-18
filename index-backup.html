@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<meta name="description" content="JARVIS personal business command centre">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>JARVIS — Command Centre</title>
+<style>
+:root{--bg:#07111f;--panel:#0d1b2c;--panel2:#10243a;--line:#1d3852;--cyan:#54d9ff;--blue:#2186c9;--text:#e9f5ff;--muted:#91a9bd;--green:#54d69a;--red:#ff7c87}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#102c46 0,#07111f 55%);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+header{padding:22px max(18px,calc((100vw - 1100px)/2));border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:12px}.orb{width:42px;height:42px;border:2px solid var(--cyan);border-radius:50%;box-shadow:0 0 22px #36cfff66,inset 0 0 15px #36cfff55;display:grid;place-items:center;color:var(--cyan);font-weight:800}
+h1{font-size:20px;letter-spacing:3px;margin:0}.sub{font-size:11px;color:var(--muted);letter-spacing:2px}
+.status{font-size:12px;color:var(--green);border:1px solid #28684f;padding:6px 10px;border-radius:20px}
+main{max-width:1100px;margin:auto;padding:22px 16px 48px}.hero{padding:20px 0 24px}.eyebrow{color:var(--cyan);letter-spacing:2px;font-size:11px;font-weight:700}.hero h2{font-size:clamp(26px,5vw,40px);margin:8px 0}.hero p{color:var(--muted);max-width:650px;line-height:1.6;margin:0}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}.card{background:linear-gradient(145deg,#102238,#0a1727);border:1px solid var(--line);border-radius:16px;padding:17px;box-shadow:0 10px 30px #0002}.metric{grid-column:span 4}.wide{grid-column:span 8}.half{grid-column:span 6}.full{grid-column:1/-1}
+.card h3{margin:0 0 12px;font-size:15px}.metric .value{font-size:26px;font-weight:750;margin:4px 0}.muted{color:var(--muted);font-size:12px}.cyan{color:var(--cyan)}.green{color:var(--green)}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}.tab{background:#0c1b2b;border:1px solid var(--line);color:var(--muted);border-radius:10px;padding:9px 13px;cursor:pointer}.tab.active{color:var(--cyan);border-color:var(--cyan);background:#10304a}
+section.panel{display:none}section.panel.active{display:block}
+input,select,textarea{width:100%;background:#071522;border:1px solid var(--line);border-radius:9px;color:var(--text);padding:11px;font:inherit;margin:5px 0 10px}
+textarea{min-height:82px;resize:vertical}label{font-size:12px;color:var(--muted)}
+button,.btn{background:linear-gradient(100deg,#1477b7,#159fbd);border:0;color:white;border-radius:9px;padding:10px 14px;font-weight:650;cursor:pointer;text-decoration:none;display:inline-block}
+button.secondary{background:#142b40;border:1px solid var(--line);color:var(--text)}button.danger{background:#49232d;border:1px solid #773744}
+.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.row>*{flex:1}.item{border-top:1px solid var(--line);padding:11px 0;display:flex;justify-content:space-between;gap:12px;align-items:center}.item:first-child{border-top:0}.item strong{font-size:14px}.item small{display:block;color:var(--muted);margin-top:3px}
+.empty{color:var(--muted);font-size:13px;padding:10px 0}.notice{border-left:3px solid var(--cyan);padding:10px 12px;background:#10283d;color:#ccecff;border-radius:6px;font-size:13px;line-height:1.5}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:24px}
+@media(max-width:700px){.metric{grid-column:span 6}.wide,.half{grid-column:1/-1}header{padding:16px}.status{font-size:10px}main{padding:16px 12px 36px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="orb">J</div><div><h1>J.A.R.V.I.S.</h1><div class="sub">PERSONAL BUSINESS COMMAND CENTRE</div></div></div><div class="status">● SYSTEM ONLINE</div></header>
+<main>
+<div class="hero"><div class="eyebrow">BUILD 001 · R0 STARTING BUDGET</div><h2>Good to have you here.</h2><p>Your business operations centre is ready. Track your projects, record real income and expenses, organise tasks, and use the AI handoff to work with ChatGPT. Your records stay in this browser on this device.</p></div>
+<nav>
+<button class="tab active" data-tab="overview">Overview</button><button class="tab" data-tab="business">Businesses</button><button class="tab" data-tab="money">Money tracker</button><button class="tab" data-tab="tasks">Tasks</button><button class="tab" data-tab="assistant">AI assistant</button>
+</nav>
+<section id="overview" class="panel active">
+<div class="grid">
+<div class="card metric"><div class="muted">RECORDED INCOME</div><div class="value green" id="totalIncome">R0.00</div><div class="muted">Only entries you record</div></div>
+<div class="card metric"><div class="muted">RECORDED EXPENSES</div><div class="value" id="totalExpense">R0.00</div><div class="muted">Keep costs visible</div></div>
+<div class="card metric"><div class="muted">NET RECORDED</div><div class="value cyan" id="netTotal">R0.00</div><div class="muted">Income minus expenses</div></div>
+<div class="card wide"><h3>Business portfolio</h3><div id="overviewBusinesses" class="empty">Add your first business in the Businesses tab.</div></div>
+<div class="card half"><h3>Next actions</h3><div id="overviewTasks" class="empty">Add a task to get started.</div></div>
+<div class="card half"><h3>R0 operating rule</h3><div class="notice">No paid tools, deposits, subscriptions or API plans. Verify every earning opportunity before sharing personal details or paying anyone.</div></div>
+</div></section>
+<section id="business" class="panel">
+<div class="grid"><div class="card half"><h3>Add a business or project</h3><label>Project name</label><input id="bizName" placeholder="e.g. Aura Digital Hub"><label>What does it do?</label><input id="bizDesc" placeholder="Website, affiliate marketing, app..."><button id="addBiz">Add project</button></div><div class="card half"><h3>Your portfolio</h3><div id="businessList" class="empty">No projects added yet.</div></div></div>
+</section>
+<section id="money" class="panel">
+<div class="grid"><div class="card half"><h3>Record a transaction</h3><label>Type</label><select id="moneyType"><option value="income">Income received</option><option value="expense">Expense paid</option></select><label>Amount (ZAR)</label><input id="moneyAmount" type="number" min="0.01" step="0.01" placeholder="0.00"><label>Source / description</label><input id="moneyDesc" placeholder="e.g. Affiliate commission"><label>Date</label><input id="moneyDate" type="date"><button id="addMoney">Save transaction</button></div><div class="card half"><h3>Transaction history</h3><div id="moneyList" class="empty">No transactions recorded yet.</div></div></div>
+</section>
+<section id="tasks" class="panel">
+<div class="grid"><div class="card half"><h3>Create a task</h3><label>Task</label><input id="taskName" placeholder="e.g. Create 3 Pinterest pins"><label>Due date (optional)</label><input id="taskDate" type="date"><button id="addTask">Add task</button></div><div class="card half"><h3>Task list</h3><div id="taskList" class="empty">No tasks yet.</div></div></div>
+</section>
+<section id="assistant" class="panel">
+<div class="grid"><div class="card full"><h3>JARVIS AI handoff</h3><p class="muted">This first version uses ChatGPT as its AI brain. It does not have a paid API connection or independent background access. Tap below to open ChatGPT with a prepared business-assistant prompt.</p><label>What do you want JARVIS to help with?</label><textarea id="aiPrompt" placeholder="e.g. Give me a free, realistic 7-day plan to get my first affiliate sale in South Africa."></textarea><div class="row"><button id="askAI">Open ChatGPT with my command</button><button class="secondary" id="copyPrompt">Copy command</button></div><p class="muted">Never share passwords, banking PINs, one-time codes or card details in an AI prompt.</p></div>
+<div class="card full"><h3>Starter command ideas</h3><div class="row"><button class="secondary starter" data-prompt="Help me make a realistic R0-budget plan to earn my first legitimate money online in South Africa. Give me steps for today.">Find my first income</button><button class="secondary starter" data-prompt="Create a 7-day Pinterest content plan for my Amazon Associates affiliate project. Use free tools only.">Plan affiliate content</button><button class="secondary starter" data-prompt="Review my online business projects and help me choose the next highest-priority free action. Ask me for missing information.">Prioritise my business</button></div></div></div>
+</section>
+</main><footer>JARVIS BUILD 001 · R0 FIRST · YOU STAY IN CONTROL</footer>
+<script>
+const KEY='jarvis_build001_data';
+let data={businesses:[],transactions:[],tasks:[]};
+try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved)data={...data,...saved}}catch(e){}
+const $=id=>document.getElementById(id);
+const money=n=>'R'+Number(n||0).toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2});
+function save(){localStorage.setItem(KEY,JSON.stringify(data));render()}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function render(){
+ const inc=data.transactions.filter(x=>x.type==='income').reduce((a,x)=>a+x.amount,0),exp=data.transactions.filter(x=>x.type==='expense').reduce((a,x)=>a+x.amount,0);
+ $('totalIncome').textContent=money(inc);$('totalExpense').textContent=money(exp);$('netTotal').textContent=money(inc-exp);
+ $('businessList').innerHTML=data.businesses.length?data.businesses.map((b,i)=>`<div class="item"><div><strong>${esc(b.name)}</strong><small>${esc(b.desc||'No description')}</small></div><button class="danger" data-delbiz="${i}">Remove</button></div>`).join(''):'<div class="empty">No projects added yet.</div>';
+ $('overviewBusinesses').innerHTML=data.businesses.length?data.businesses.map(b=>`<div class="item"><strong>${esc(b.name)}</strong><span class="muted">${esc(b.desc||'Project')}</span></div>`).join(''):'Add your first business in the Businesses tab.';
+ $('moneyList').innerHTML=data.transactions.length?[...data.transactions].reverse().map((t,ri)=>{let i=data.transactions.length-1-ri;return `<div class="item"><div><strong>${esc(t.desc)}</strong><small>${esc(t.date)} · ${t.type==='income'?'Income':'Expense'}</small></div><span class="${t.type==='income'?'green':''}">${t.type==='income'?'+':'−'}${money(t.amount)}</span><button class="danger" data-deltx="${i}">×</button></div>`}).join(''):'<div class="empty">No transactions recorded yet.</div>';
+ $('taskList').innerHTML=data.tasks.length?data.tasks.map((t,i)=>`<div class="item"><div><strong style="${t.done?'text-decoration:line-through;color:#91a9bd':''}">${esc(t.name)}</strong><small>${esc(t.date||'No due date')}</small></div><button class="secondary" data-donetask="${i}">${t.done?'Undo':'Done'}</button><button class="danger" data-deltask="${i}">×</button></div>`).join(''):'<div class="empty">No tasks yet.</div>';
+ const pending=data.tasks.filter(t=>!t.done).slice(0,4);$('overviewTasks').innerHTML=pending.length?pending.map(t=>`<div class="item"><strong>${esc(t.name)}</strong><small>${esc(t.date||'')}</small></div>`).join(''):'No pending tasks. Add one in the Tasks tab.';
+}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab,.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active')}));
+$('addBiz').onclick=()=>{let name=$('bizName').value.trim();if(!name)return alert('Enter a project name.');data.businesses.push({name,desc:$('bizDesc').value.trim()});$('bizName').value='';$('bizDesc').value='';save()};
+$('addMoney').onclick=()=>{let amount=Number($('moneyAmount').value),desc=$('moneyDesc').value.trim();if(!(amount>0)||!desc)return alert('Enter a valid amount and description.');data.transactions.push({type:$('moneyType').value,amount,desc,date:$('moneyDate').value||new Date().toISOString().slice(0,10)});$('moneyAmount').value='';$('moneyDesc').value='';save()};
+$('addTask').onclick=()=>{let name=$('taskName').value.trim();if(!name)return alert('Enter a task.');data.tasks.push({name,date:$('taskDate').value,done:false});$('taskName').value='';save()};
+document.addEventListener('click',e=>{let t=e.target;if(t.dataset.delbiz!==undefined){data.businesses.splice(+t.dataset.delbiz,1);save()}if(t.dataset.deltx!==undefined){data.transactions.splice(+t.dataset.deltx,1);save()}if(t.dataset.deltask!==undefined){data.tasks.splice(+t.dataset.deltask,1);save()}if(t.dataset.donetask!==undefined){let x=data.tasks[+t.dataset.donetask];x.done=!x.done;save()}});
+function promptText(){return 'You are JARVIS, my practical business assistant. I am in South Africa and my starting budget is R0. Use free resources only; do not recommend deposits, paid subscriptions, paid APIs or guaranteed-income schemes. Give clear, realistic, step-by-step help. My command: '+$('aiPrompt').value.trim()}
+$('askAI').onclick=()=>{if(!$('aiPrompt').value.trim())return alert('Type a command first.');window.open('https://chatgpt.com/?q='+encodeURIComponent(promptText()),'_blank','noopener')};
+$('copyPrompt').onclick=async()=>{if(!$('aiPrompt').value.trim())return alert('Type a command first.');try{await navigator.clipboard.writeText(promptText());alert('Command copied.')}catch(e){alert('Clipboard not available. You can select and copy the text manually.')}};
+document.querySelectorAll('.starter').forEach(b=>b.onclick=()=>{$('aiPrompt').value=b.dataset.prompt});
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+render();
+</script>
+</body></html>
