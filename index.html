@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -31,17 +32,48 @@ button,.btn{font:inherit}.action{background:linear-gradient(100deg,#1477b7,#159f
 <button class="tab active" data-tab="overview">Overview</button><button class="tab" data-tab="business">Business</button><button class="tab" data-tab="money">Money tracker</button><button class="tab" data-tab="reports">Reports</button><button class="tab" data-tab="tasks">Tasks</button><button class="tab" data-tab="assistant">AI assistant</button><button class="tab" data-tab="backup">Backup</button>
 </nav>
 <section id="overview" class="panel active"><div class="grid">
-<div class="card metric"><div class="muted">PROJECTS</div><div class="value cyan" id="businessCount">0</div><div class="small">In your portfolio</div></div>
+<div class="card metric"><div class="muted">PROJECTS</div><div class="value cyan" id="businessCount">0</div><div class="small">In your portfolio</div></div><div class="card metric">
+<div class="muted">AVERAGE PROGRESS</div>
+<div class="value cyan" id="overallProgress">0%</div>
+<div class="small">Across all projects</div>
+</div>
 <div class="card metric"><div class="muted">RECORDED INCOME</div><div class="value green" id="incomeTotal">R0.00</div><div class="small">Actual entries only</div></div>
 <div class="card metric"><div class="muted">RECORDED EXPENSES</div><div class="value red" id="expenseTotal">R0.00</div><div class="small">Actual entries only</div></div>
-<div class="card metric"><div class="muted">OPEN TASKS</div><div class="value cyan" id="pendingCount">0</div><div class="small">Still to complete</div></div>
+<div class="card metric"><div class="muted">OPEN TASKS</div><div class="value cyan" id="pendingCount">0</div><div class="small">Still to complete</div></div><div class="card metric">
+<div class="muted">ACTIVE PROJECTS</div>
+<div class="value green" id="activeProjectCount">0</div>
+<div class="small">Currently active</div>
+</div>
+<div class="card metric">
+<div class="muted">COMPLETED PROJECTS</div>
+<div class="value cyan" id="completedProjectCount">0</div>
+<div class="small">Finished projects</div>
+</div>
+<div class="card metric">
+<div class="muted">PLANNING</div>
+<div class="value yellow" id="planningProjectCount">0</div>
+<div class="small">Awaiting action</div>
+</div>
+<div class="card metric">
+<div class="muted">PAUSED PROJECTS</div>
+<div class="value red" id="pausedProjectCount">0</div>
+<div class="small">Temporarily paused</div>
+</div>
 <div class="card wide"><h3>Business portfolio</h3><div id="overviewBusinesses" class="empty">Your projects will appear here.</div></div>
 <div class="card half"><h3>Next actions</h3><div id="overviewTasks" class="empty">No open tasks.</div></div>
 <div class="card half"><h3>R0 operating rule</h3><div class="notice">No paid tools, deposits, subscriptions or API plans. Verify every earning opportunity. Never store passwords, banking PINs or one-time codes here.</div></div>
-<div class="card full"><h3>Today's briefing</h3><div class="muted" id="todayDate"></div><div id="dailyBriefing" class="muted"></div></div>
+<div class="card full">
+<h3>JARVIS Attention Centre</h3>
+<div id="attentionCentre" class="muted">
+Checking business activity...
+</div>
+</div><div class="card full"><h3>Today's briefing</h3><div class="muted" id="todayDate"></div><div id="dailyBriefing" class="muted"></div></div>
 </div></section>
 <section id="business" class="panel"><div class="grid">
-<div class="card half"><h3>Add a business or project</h3><form id="businessForm"><label>Project name</label><input id="businessName" required placeholder="Project name"><label>Description</label><textarea id="businessDescription" placeholder="What does this project do?"></textarea><label>Status</label><select id="businessStatus"><option>Active</option><option>Planning</option><option>Paused</option><option>Completed</option></select><label>Project notes</label><textarea id="businessNotes" placeholder="Next steps, links to check, ideas (no passwords or private keys)"></textarea><button class="action" type="submit">Add project</button></form></div>
+<div class="card half"><h3>Add a business or project</h3><form id="businessForm"><label>Project name</label><input id="businessName" required placeholder="Project name"><label>Description</label><textarea id="businessDescription" placeholder="What does this project do?"></textarea><label>Status</label><select id="businessStatus"><option>Active</option><option>Planning</option><option>Paused</option><option>Completed</option></select><label>Project progress (0–100%)</label>
+<input id="businessProgress" type="number"
+min="0" max="100" value="0"
+placeholder="Enter progress percentage"><label>Project notes</label><textarea id="businessNotes" placeholder="Next steps, links to check, ideas (no passwords or private keys)"></textarea><button class="action" type="submit">Add project</button></form></div>
 <div class="card half"><h3>Your portfolio</h3><div class="muted" id="portfolioSummary"></div><div id="businessList" class="empty">Loading projects...</div></div>
 </div></section>
 <section id="money" class="panel"><div class="grid">
@@ -83,7 +115,7 @@ function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&l
 function normaliseData(raw){
  const d=raw&&typeof raw==='object'?raw:{};
  return {
-  businesses:Array.isArray(d.businesses)?d.businesses.map(b=>({...b,id:b.id||makeId(),name:String(b.name||'Unnamed project'),description:String(b.description??b.desc??''),notes:String(b.notes||''),status:b.status||'Active'})) : [],
+  businesses:Array.isArray(d.businesses)?d.businesses.map(b=>({...b,id:b.id||makeId(),name:String(b.name||'Unnamed project'),description:String(b.description??b.desc??''),notes:String(b.notes||''),status:b.status||'Active',progress:Math.max(0,Math.min(100,Number(b.progress)||0))})) : [],
   transactions:Array.isArray(d.transactions)?d.transactions.map(t=>({...t,id:t.id||makeId(),type:t.type==='expense'?'expense':'income',amount:Number(t.amount)||0,description:String(t.description??t.desc??''),date:String(t.date||todayLocal()),businessId:t.businessId||''})):[],
   tasks:Array.isArray(d.tasks)?d.tasks.map(t=>({...t,id:t.id||makeId(),title:String(t.title??t.name??''),businessId:t.businessId||'',priority:t.priority||'Medium',due:String(t.due??t.date??''),done:Boolean(t.done)})):[]
  };
@@ -104,7 +136,17 @@ function showPage(id){document.querySelectorAll('.panel').forEach(p=>p.classList
 document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.tab)));
 function renderBusinesses(){
  $('businessCount').textContent=data.businesses.length;
- $('businessList').innerHTML=data.businesses.length?data.businesses.map(b=>`<div class="item"><div class="grow"><strong>${esc(b.name)}</strong><div><span class="pill">${esc(b.status||'Active')}</span></div><small>${esc(b.description||'No description')}</small>${b.notes?`<small><strong>Notes:</strong> ${esc(b.notes)}</small>`:''}<div class="row" style="margin-top:8px"><button class="secondary" data-editbiz="${esc(b.id)}">Edit details</button><button class="danger" data-delbiz="${esc(b.id)}">Delete</button></div></div></div>`).join(''):'<div class="empty">No projects yet.</div>';
+ const totalProgress=data.businesses.reduce(
+  (sum,b)=>sum+Math.max(0,Math.min(100,Number(b.progress)||0)),0
+ );
+ $('overallProgress').textContent=data.businesses.length
+  ?Math.round(totalProgress/data.businesses.length)+'%'
+  :'0%';
+ $('activeProjectCount').textContent=data.businesses.filter(b=>b.status==='Active').length;
+ $('completedProjectCount').textContent=data.businesses.filter(b=>b.status==='Completed').length;
+ $('planningProjectCount').textContent=data.businesses.filter(b=>b.status==='Planning').length;
+ $('pausedProjectCount').textContent=data.businesses.filter(b=>b.status==='Paused').length;
+ $('businessList').innerHTML=data.businesses.length?data.businesses.map(b=>`<div class="item"><div class="grow"><strong>${esc(b.name)}</strong><div><span class="pill">${esc(b.status||'Active')}</span><span class="pill">${Math.max(0,Math.min(100,Number(b.progress)||0))}% complete</span></div><div class="bar"><span style="width:${Math.max(0,Math.min(100,Number(b.progress)||0))}%"></span></div><small>${esc(b.description||'No description')}</small>${b.notes?`<small><strong>Notes:</strong> ${esc(b.notes)}</small>`:''}<div class="row" style="margin-top:8px"><button class="secondary" data-editbiz="${esc(b.id)}">Edit details</button><button class="danger" data-delbiz="${esc(b.id)}">Delete</button></div></div></div>`).join(''):'<div class="empty">No projects yet.</div>';
  $('overviewBusinesses').innerHTML=data.businesses.map(b=>`<div class="item"><div><strong>${esc(b.name)}</strong><small>${esc(b.description)}</small></div><span class="pill">${esc(b.status||'Active')}</span></div>`).join('')||'<div class="empty">No projects yet.</div>';
  $('portfolioSummary').textContent=data.businesses.length+' projects · '+data.businesses.filter(b=>(b.status||'Active')==='Active').length+' active';
  ['taskBusiness','transactionBusiness'].forEach(id=>{const el=$(id),old=el.value;el.innerHTML='<option value="">General</option>'+data.businesses.map(b=>`<option value="${esc(b.id)}">${esc(b.name)}</option>`).join('');el.value=old});
@@ -131,11 +173,46 @@ function renderReports(){
 function renderOverview(){
  $('todayDate').textContent=new Date().toLocaleDateString('en-ZA',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
  const pending=data.tasks.filter(t=>!t.done),due=pending.filter(t=>t.due&&t.due<=todayLocal());
+ const attention=[];
+ // Overdue tasks
+ due.forEach(t=>{
+  attention.push(
+   `<div class="item">
+    <div><strong class="red">Overdue task</strong>
+    <small>${esc(t.title)} — ${esc(t.due)}</small></div>
+   </div>`
+  );
+ });
+ // Projects needing attention
+ data.businesses.filter(b=>['Planning','Paused'].includes(b.status)).forEach(b=>{
+  attention.push(
+   `<div class="item">
+    <div><strong class="yellow">${esc(b.status)} project</strong>
+    <small>${esc(b.name)} — ${esc(b.description)}</small></div>
+   </div>`
+  );
+ });
+ $('attentionCentre').innerHTML=attention.length
+  ?attention.join('')
+  :'<div class="notice">All clear! No overdue tasks or paused/planning projects requiring attention.</div>';
  $('dailyBriefing').innerHTML=due.length?`<p>${due.length} task(s) are due today or overdue.</p>`:pending.length?`<p>${pending.length} open task(s). Choose one useful action to move a project forward.</p>`:'<p>No open tasks. Add one small next action when ready.</p>';
 }
 function renderBackup(){$('storageInfo').textContent=`Projects: ${data.businesses.length} · Transactions: ${data.transactions.length} · Tasks: ${data.tasks.length}. Stored locally in this browser. Storage key: ${KEY}.`}
 function render(){renderBusinesses();renderMoney();renderTasks();renderOverview();renderReports();renderBackup()}
-$('businessForm').addEventListener('submit',e=>{e.preventDefault();const name=$('businessName').value.trim();if(!name)return;data.businesses.push({id:makeId(),name,description:$('businessDescription').value.trim(),status:$('businessStatus').value,notes:$('businessNotes').value.trim()});if(saveData()){e.target.reset();render()}});
+$('businessForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const name=$('businessName').value.trim();
+ if(!name)return;
+ data.businesses.push({
+  id:makeId(),
+  name,
+  description:$('businessDescription').value.trim(),
+  status:$('businessStatus').value,
+  progress:Math.max(0,Math.min(100,Number($('businessProgress').value)||0)),
+  notes:$('businessNotes').value.trim()
+ });
+ if(saveData()){e.target.reset();render()}
+});
 $('transactionDate').value=todayLocal();$('reportMonth').value=todayLocal().slice(0,7);
 $('transactionForm').addEventListener('submit',e=>{e.preventDefault();const amount=Number($('transactionAmount').value),description=$('transactionDescription').value.trim();if(!(amount>0)||!description)return;data.transactions.push({id:makeId(),type:$('transactionType').value,amount,description,date:$('transactionDate').value||todayLocal(),businessId:$('transactionBusiness').value});if(saveData()){e.target.reset();$('transactionDate').value=todayLocal();render()}});
 $('taskForm').addEventListener('submit',e=>{e.preventDefault();const title=$('taskTitle').value.trim();if(!title)return;data.tasks.push({id:makeId(),title,businessId:$('taskBusiness').value,priority:$('taskPriority').value,due:$('taskDue').value,done:false});if(saveData()){e.target.reset();render()}});
@@ -143,7 +220,23 @@ $('reportMonth').addEventListener('change',renderReports);
 document.addEventListener('click',e=>{
  const t=e.target;
  if(t.dataset.delbiz){if(!confirm('Delete this project? Related transactions and tasks will remain.'))return;data.businesses=data.businesses.filter(b=>b.id!==t.dataset.delbiz);saveData();render()}
- if(t.dataset.editbiz){const b=data.businesses.find(x=>x.id===t.dataset.editbiz);if(!b)return;const name=prompt('Project name:',b.name);if(name===null)return;if(!name.trim())return alert('Project name cannot be empty.');const description=prompt('Project description:',b.description||'');if(description===null)return;const notes=prompt('Project notes (do not enter passwords or banking details):',b.notes||'');if(notes===null)return;const status=prompt('Status: Active, Planning, Paused or Completed',b.status||'Active');if(status===null)return;b.name=name.trim();b.description=description.trim();b.notes=notes.trim();b.status=['Active','Planning','Paused','Completed'].includes(status)?status:'Active';saveData();render()}
+ if(t.dataset.editbiz){
+  const b=data.businesses.find(x=>x.id===t.dataset.editbiz);if(!b)return;
+  const name=prompt('Project name:',b.name);if(name===null)return;if(!name.trim())return alert('Project name cannot be empty.');
+  const description=prompt('Project description:',b.description||'');if(description===null)return;
+  const notes=prompt('Project notes (do not enter passwords or banking details):',b.notes||'');if(notes===null)return;
+  const status=prompt('Status: Active, Planning, Paused or Completed',b.status||'Active');if(status===null)return;
+  const progressInput=prompt('Project progress (0–100):',String(Math.max(0,Math.min(100,Number(b.progress)||0))));
+  if(progressInput===null)return;
+  const progress=Number(progressInput);
+  if(!Number.isFinite(progress)||progress<0||progress>100)return alert('Enter a number between 0 and 100.');
+  b.name=name.trim();
+  b.description=description.trim();
+  b.notes=notes.trim();
+  b.status=['Active','Planning','Paused','Completed'].includes(status)?status:'Active';
+  b.progress=progress;
+  saveData();render();
+ }
  if(t.dataset.deltx){if(!confirm('Delete this transaction?'))return;data.transactions=data.transactions.filter(x=>x.id!==t.dataset.deltx);saveData();render()}
  if(t.dataset.donetask){const task=data.tasks.find(x=>x.id===t.dataset.donetask);if(task)task.done=!task.done;saveData();render()}
  if(t.dataset.deltask){if(!confirm('Delete this task?'))return;data.tasks=data.tasks.filter(x=>x.id!==t.dataset.deltask);saveData();render()}
