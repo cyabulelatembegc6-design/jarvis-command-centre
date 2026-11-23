@@ -1,0 +1,265 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<meta name="description" content="JARVIS Build 003 — R0-first business command centre">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>JARVIS — Build 003</title>
+<style>
+:root{--bg:#07111f;--panel:#0d1b2c;--panel2:#10243a;--line:#1d3852;--cyan:#54d9ff;--blue:#2186c9;--text:#e9f5ff;--muted:#91a9bd;--green:#54d69a;--red:#ff7c87;--yellow:#ffd166}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#102c46 0,#07111f 55%);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+header{padding:18px max(16px,calc((100vw - 1120px)/2));border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:#081625}
+.brand{display:flex;align-items:center;gap:12px}.orb{width:42px;height:42px;border:2px solid var(--cyan);border-radius:50%;box-shadow:0 0 22px #36cfff66,inset 0 0 15px #36cfff55;display:grid;place-items:center;color:var(--cyan);font-weight:800;font-size:22px}
+h1{font-size:20px;letter-spacing:3px;margin:0}.sub{font-size:11px;color:var(--muted);letter-spacing:1.5px;margin-top:3px}.status{font-size:11px;color:var(--green);border:1px solid #28684f;padding:6px 10px;border-radius:20px}
+main{max-width:1120px;margin:auto;padding:20px 15px 42px}.hero{padding:12px 0 20px}.eyebrow{color:var(--cyan);letter-spacing:2px;font-size:11px;font-weight:700}.hero h2{font-size:clamp(25px,5vw,38px);margin:8px 0}.hero p{color:var(--muted);max-width:720px;line-height:1.6;margin:0}
+nav{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 18px}.tab{background:#0c1b2b;border:1px solid var(--line);color:var(--muted);border-radius:9px;padding:9px 12px;cursor:pointer}.tab.active{color:var(--cyan);border-color:var(--cyan);background:#10304a}
+.panel{display:none}.panel.active{display:block}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}.card{background:linear-gradient(145deg,#102238,#0a1727);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0}.metric{grid-column:span 3}.wide{grid-column:span 8}.half{grid-column:span 6}.full{grid-column:1/-1}.metric .value{font-size:25px;font-weight:750;margin:5px 0;overflow-wrap:anywhere}.card h3{margin:0 0 12px;font-size:15px}.muted,.small{color:var(--muted)}.muted{font-size:12px;line-height:1.55}.small{font-size:11px}.cyan{color:var(--cyan)}.green{color:var(--green)}.red{color:var(--red)}.yellow{color:var(--yellow)}
+input,select,textarea{width:100%;background:#071522;border:1px solid var(--line);border-radius:8px;color:var(--text);padding:10px;font:inherit;margin:5px 0 10px}textarea{min-height:76px;resize:vertical}label{font-size:12px;color:var(--muted)}
+button,.btn{font:inherit}.action{background:linear-gradient(100deg,#1477b7,#159fbd);border:0;color:white;border-radius:8px;padding:10px 13px;font-weight:650;cursor:pointer}.secondary{background:#142b40;border:1px solid var(--line);color:var(--text);border-radius:8px;padding:9px 12px;cursor:pointer}.danger{background:#49232d;border:1px solid #773744;color:#ffe4e7;border-radius:8px;padding:8px 10px;cursor:pointer}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.row>*{min-width:0}.row .grow{flex:1}.item{border-top:1px solid var(--line);padding:11px 0;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.item:first-child{border-top:0}.item strong{font-size:13px}.item small{display:block;color:var(--muted);margin-top:3px}.empty{color:var(--muted);font-size:13px;padding:10px 0}.notice{border-left:3px solid var(--cyan);padding:10px 12px;background:#10283d;color:#ccecff;border-radius:6px;font-size:12px;line-height:1.5}.pill{display:inline-block;border:1px solid var(--line);border-radius:20px;padding:3px 8px;font-size:10px;color:var(--cyan);margin:3px 4px 0 0}.task-done{text-decoration:line-through;color:var(--muted)}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.bar{height:8px;background:#071522;border-radius:10px;overflow:hidden;margin-top:7px}.bar>span{display:block;height:100%;background:var(--cyan)}footer{text-align:center;color:var(--muted);font-size:11px;padding:24px}
+@media(max-width:760px){.metric{grid-column:span 6}.wide,.half{grid-column:1/-1}header{padding:14px}.formgrid{grid-template-columns:1fr}main{padding:14px 11px 32px}.tab{padding:8px 10px;font-size:12px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="orb">J</div><div><h1>J.A.R.V.I.S.</h1><div class="sub">PERSONAL BUSINESS COMMAND CENTRE · BUILD 003</div></div></div><div class="status">● SYSTEM READY</div></header>
+<main>
+<div class="hero"><div class="eyebrow">BUILD 003 · R0 STARTING BUDGET</div><h2>Your business command centre.</h2><p>Manage your existing projects, record real money, organise work and protect your records. JARVIS uses free tools first. Your records remain in this browser unless you export and move a backup yourself.</p></div>
+<nav id="navigation">
+<button class="tab active" data-tab="overview">Overview</button><button class="tab" data-tab="business">Business</button><button class="tab" data-tab="money">Money tracker</button><button class="tab" data-tab="reports">Reports</button><button class="tab" data-tab="tasks">Tasks</button><button class="tab" data-tab="assistant">AI assistant</button><button class="tab" data-tab="backup">Backup</button>
+</nav>
+<section id="overview" class="panel active"><div class="grid">
+<div class="card metric"><div class="muted">PROJECTS</div><div class="value cyan" id="businessCount">0</div><div class="small">In your portfolio</div></div><div class="card metric">
+<div class="muted">AVERAGE PROGRESS</div>
+<div class="value cyan" id="overallProgress">0%</div>
+<div class="small">Across all projects</div>
+</div>
+<div class="card metric"><div class="muted">RECORDED INCOME</div><div class="value green" id="incomeTotal">R0.00</div><div class="small">Actual entries only</div></div>
+<div class="card metric"><div class="muted">RECORDED EXPENSES</div><div class="value red" id="expenseTotal">R0.00</div><div class="small">Actual entries only</div></div>
+<div class="card metric"><div class="muted">OPEN TASKS</div><div class="value cyan" id="pendingCount">0</div><div class="small">Still to complete</div></div><div class="card metric">
+<div class="muted">ACTIVE PROJECTS</div>
+<div class="value green" id="activeProjectCount">0</div>
+<div class="small">Currently active</div>
+</div>
+<div class="card metric">
+<div class="muted">COMPLETED PROJECTS</div>
+<div class="value cyan" id="completedProjectCount">0</div>
+<div class="small">Finished projects</div>
+</div>
+<div class="card metric">
+<div class="muted">PLANNING</div>
+<div class="value yellow" id="planningProjectCount">0</div>
+<div class="small">Awaiting action</div>
+</div>
+<div class="card metric">
+<div class="muted">PAUSED PROJECTS</div>
+<div class="value red" id="pausedProjectCount">0</div>
+<div class="small">Temporarily paused</div>
+</div>
+<div class="card wide"><h3>Business portfolio</h3><div id="overviewBusinesses" class="empty">Your projects will appear here.</div></div>
+<div class="card half"><h3>Next actions</h3><div id="overviewTasks" class="empty">No open tasks.</div></div>
+<div class="card half"><h3>R0 operating rule</h3><div class="notice">No paid tools, deposits, subscriptions or API plans. Verify every earning opportunity. Never store passwords, banking PINs or one-time codes here.</div></div>
+<div class="card full">
+<h3>JARVIS Attention Centre</h3>
+<div id="attentionCentre" class="muted">
+Checking business activity...
+</div>
+</div><div class="card full"><h3>Today's briefing</h3><div class="muted" id="todayDate"></div><div id="dailyBriefing" class="muted"></div></div>
+</div></section>
+<section id="business" class="panel"><div class="grid">
+<div class="card half"><h3>Add a business or project</h3><form id="businessForm"><label>Project name</label><input id="businessName" required placeholder="Project name"><label>Description</label><textarea id="businessDescription" placeholder="What does this project do?"></textarea><label>Status</label><select id="businessStatus"><option>Active</option><option>Planning</option><option>Paused</option><option>Completed</option></select><label>Project progress (0–100%)</label>
+<input id="businessProgress" type="number"
+min="0" max="100" value="0"
+placeholder="Enter progress percentage"><label>Project notes</label><textarea id="businessNotes" placeholder="Next steps, links to check, ideas (no passwords or private keys)"></textarea><button class="action" type="submit">Add project</button></form></div>
+<div class="card half"><h3>Your portfolio</h3><div class="muted" id="portfolioSummary"></div><div id="businessList" class="empty">Loading projects...</div></div>
+</div></section>
+<section id="money" class="panel"><div class="grid">
+<div class="card half"><h3>Record a transaction</h3><form id="transactionForm"><label>Type</label><select id="transactionType"><option value="income">Income received</option><option value="expense">Expense paid</option></select><label>Amount (ZAR)</label><input id="transactionAmount" type="number" min="0.01" step="0.01" required placeholder="0.00"><label>Description</label><input id="transactionDescription" required placeholder="What was this for?"><label>Date</label><input id="transactionDate" type="date" required><label>Related project</label><select id="transactionBusiness"><option value="">General</option></select><button class="action" type="submit">Save transaction</button></form></div>
+<div class="card half"><h3>Transaction history</h3><div id="transactionList" class="empty">No transactions recorded.</div></div>
+</div></section>
+<section id="reports" class="panel"><div class="card"><h3>Monthly financial report</h3><p class="muted">This report uses only transactions you have actually entered. It does not estimate future income.</p><label>Choose month</label><input id="reportMonth" type="month"><div class="grid"><div class="card metric"><div class="muted">INCOME</div><div class="value green" id="reportIncome">R0.00</div></div><div class="card metric"><div class="muted">EXPENSES</div><div class="value red" id="reportExpense">R0.00</div></div><div class="card metric"><div class="muted">NET</div><div class="value cyan" id="reportNet">R0.00</div></div><div class="card metric"><div class="muted">TRANSACTIONS</div><div class="value" id="reportCount">0</div></div></div><div id="reportDetails" class="muted">No transactions for this month.</div></div></section>
+<section id="tasks" class="panel"><div class="grid">
+<div class="card half"><h3>Create a task</h3><form id="taskForm"><label>Task</label><input id="taskTitle" required placeholder="What needs to be done?"><label>Related project</label><select id="taskBusiness"><option value="">General task</option></select><div class="formgrid"><div><label>Priority</label><select id="taskPriority"><option>High</option><option selected>Medium</option><option>Low</option></select></div><div><label>Due date</label><input id="taskDue" type="date"></div></div><button class="action" type="submit">Add task</button></form></div>
+<div class="card half"><h3>My tasks</h3><div id="taskList" class="empty">No tasks yet.</div></div>
+</div></section>
+<section id="assistant" class="panel"><div class="card"><h3>JARVIS AI handoff</h3><p class="muted">JARVIS prepares a command and opens ChatGPT separately. It does not have a paid API connection, unrestricted background access or guaranteed earning capability.</p><label>Choose a command</label><select id="commandSelect"><option value="Review my business projects and recommend the most practical next actions I can take with R0 budget.">Business strategy review</option><option value="Create a realistic daily action plan for my online projects in South Africa.">Daily action plan</option><option value="Help me improve my Amazon Associates and Pinterest affiliate marketing strategy using free tools.">Amazon and Pinterest</option><option value="Help me improve my Linktree and Payhip setup without spending money.">Linktree and Payhip</option><option value="Help me grow my AI Wallpaper app and Aura Digital Hub using free tools.">Apps and digital hub</option><option value="Help me understand AdSense readiness, website traffic and free ways to improve useful visitor engagement.">AdSense and traffic</option><option value="Review my actual recorded income and expenses and help me plan responsibly.">Money planning</option><option value="Find legitimate online earning opportunities available in South Africa that require no upfront payment.">R0 online opportunities</option></select><label>Additional instructions</label><textarea id="extraCommand" placeholder="Add details or questions..."></textarea><div class="row"><button class="action" id="askAI">Open ChatGPT with command</button><button class="secondary" id="copyAI">Copy command</button></div><p class="small">Review advice before acting. Never paste passwords, banking PINs, card details or one-time codes.</p></div><div class="card"><h3>JARVIS operating principles</h3><div class="notice">R0 budget. Free tools first. No deposits, paid subscriptions, paid APIs, activation fees or guaranteed-income promises.</div></div></section>
+<section id="backup" class="panel"><div class="grid">
+<div class="card half"><h3>Export your records</h3><p class="muted">Download a JSON backup of projects, transactions and tasks. Keep a copy outside this browser, such as in a separate folder or USB drive.</p><button class="action" id="exportBackup">Download backup</button></div>
+<div class="card half"><h3>Restore a backup</h3><p class="muted">Restoring replaces the records currently stored in this browser. Export your current records first.</p><input type="file" id="restoreFile" accept=".json,application/json"><button class="secondary" id="restoreBackup">Restore selected backup</button></div>
+<div class="card full"><h3>Storage and recovery</h3><div id="storageInfo" class="muted">Checking storage...</div><p class="notice">Build 003 keeps the existing storage key <strong>jarvis_build001_data</strong> for compatibility. Browser storage is not cloud sync. Export backups regularly.</p></div>
+</div></section>
+</main><footer>JARVIS BUILD 003 · R0 FIRST · YOU STAY IN CONTROL</footer>
+<script>
+'use strict';
+// Compatibility: retain Build 002's existing localStorage key.
+const KEY='jarvis_build001_data';
+const SEED_KEY='jarvis_build003_projects_seeded';
+const DEFAULT_PROJECTS=[
+{name:'Amazon Associates',description:'Affiliate marketing and product recommendations'},
+{name:'Pinterest Marketing',description:'Content, pins, traffic and audience growth'},
+{name:'Aura Digital Hub',description:'Free online business hub and digital presence'},
+{name:'AI Wallpaper Project',description:'AI wallpaper app, engagement and monetisation'},
+{name:'Linktree',description:'Link-in-bio page and traffic destination'},
+{name:'Payhip',description:'Digital products and beginner-friendly storefront'},
+{name:'AdSense',description:'AdSense readiness, policy compliance and monetisation'},
+{name:'Website Traffic',description:'Traffic sources, useful content and visitor engagement'}
+];
+const $=id=>document.getElementById(id);
+const todayLocal=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const makeId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const money=n=>'R'+Number(n||0).toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2});
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function normaliseData(raw){
+ const d=raw&&typeof raw==='object'?raw:{};
+ return {
+  businesses:Array.isArray(d.businesses)?d.businesses.map(b=>({...b,id:b.id||makeId(),name:String(b.name||'Unnamed project'),description:String(b.description??b.desc??''),notes:String(b.notes||''),status:b.status||'Active',progress:Math.max(0,Math.min(100,Number(b.progress)||0))})) : [],
+  transactions:Array.isArray(d.transactions)?d.transactions.map(t=>({...t,id:t.id||makeId(),type:t.type==='expense'?'expense':'income',amount:Number(t.amount)||0,description:String(t.description??t.desc??''),date:String(t.date||todayLocal()),businessId:t.businessId||''})):[],
+  tasks:Array.isArray(d.tasks)?d.tasks.map(t=>({...t,id:t.id||makeId(),title:String(t.title??t.name??''),businessId:t.businessId||'',priority:t.priority||'Medium',due:String(t.due??t.date??''),done:Boolean(t.done)})):[]
+ };
+}
+function loadData(){
+ try{const raw=JSON.parse(localStorage.getItem(KEY)||'null');return normaliseData(raw)}catch(e){alert('JARVIS could not read its saved data. Do not clear browser storage. Use your downloaded JSON backup if needed.');return {businesses:[],transactions:[],tasks:[]}}
+}
+let data=loadData();
+function saveData(){try{localStorage.setItem(KEY,JSON.stringify(data));return true}catch(e){alert('JARVIS could not save. Browser storage may be full or unavailable. Export a backup if possible.');return false}}
+function seedProjects(){
+ if(localStorage.getItem(SEED_KEY)==='yes')return;
+ const names=new Set(data.businesses.map(b=>b.name.trim().toLowerCase()));
+ DEFAULT_PROJECTS.forEach(p=>{if(!names.has(p.name.toLowerCase()))data.businesses.push({id:makeId(),...p,notes:'',status:'Active'})});
+ if(saveData())localStorage.setItem(SEED_KEY,'yes');
+}
+seedProjects();
+function showPage(id){document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));render();window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.tab)));
+function renderBusinesses(){
+ $('businessCount').textContent=data.businesses.length;
+ const totalProgress=data.businesses.reduce(
+  (sum,b)=>sum+Math.max(0,Math.min(100,Number(b.progress)||0)),0
+ );
+ $('overallProgress').textContent=data.businesses.length
+  ?Math.round(totalProgress/data.businesses.length)+'%'
+  :'0%';
+ $('activeProjectCount').textContent=data.businesses.filter(b=>b.status==='Active').length;
+ $('completedProjectCount').textContent=data.businesses.filter(b=>b.status==='Completed').length;
+ $('planningProjectCount').textContent=data.businesses.filter(b=>b.status==='Planning').length;
+ $('pausedProjectCount').textContent=data.businesses.filter(b=>b.status==='Paused').length;
+ $('businessList').innerHTML=data.businesses.length?data.businesses.map(b=>`<div class="item"><div class="grow"><strong>${esc(b.name)}</strong><div><span class="pill">${esc(b.status||'Active')}</span><span class="pill">${Math.max(0,Math.min(100,Number(b.progress)||0))}% complete</span></div><div class="bar"><span style="width:${Math.max(0,Math.min(100,Number(b.progress)||0))}%"></span></div><small>${esc(b.description||'No description')}</small>${b.notes?`<small><strong>Notes:</strong> ${esc(b.notes)}</small>`:''}<div class="row" style="margin-top:8px"><button class="secondary" data-editbiz="${esc(b.id)}">Edit details</button><button class="danger" data-delbiz="${esc(b.id)}">Delete</button></div></div></div>`).join(''):'<div class="empty">No projects yet.</div>';
+ $('overviewBusinesses').innerHTML=data.businesses.map(b=>`<div class="item"><div><strong>${esc(b.name)}</strong><small>${esc(b.description)}</small></div><span class="pill">${esc(b.status||'Active')}</span></div>`).join('')||'<div class="empty">No projects yet.</div>';
+ $('portfolioSummary').textContent=data.businesses.length+' projects · '+data.businesses.filter(b=>(b.status||'Active')==='Active').length+' active';
+ ['taskBusiness','transactionBusiness'].forEach(id=>{const el=$(id),old=el.value;el.innerHTML='<option value="">General</option>'+data.businesses.map(b=>`<option value="${esc(b.id)}">${esc(b.name)}</option>`).join('');el.value=old});
+}
+function renderMoney(){
+ const income=data.transactions.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0),expense=data.transactions.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+ $('incomeTotal').textContent=money(income);$('expenseTotal').textContent=money(expense);
+ const sorted=[...data.transactions].sort((a,b)=>b.date.localeCompare(a.date));
+ $('transactionList').innerHTML=sorted.map(t=>`<div class="item"><div class="grow"><strong>${esc(t.description)}</strong><small>${esc(t.date)} · ${t.type==='income'?'Income':'Expense'} · ${esc(projectName(t.businessId))}</small></div><strong class="${t.type==='income'?'green':'red'}">${t.type==='income'?'+':'−'}${money(t.amount)}</strong><button class="danger" data-deltx="${esc(t.id)}">×</button></div>`).join('')||'<div class="empty">No transactions recorded.</div>';
+}
+function projectName(id){return data.businesses.find(b=>b.id===id)?.name||'General'}
+function renderTasks(){
+ const open=data.tasks.filter(t=>!t.done);$('pendingCount').textContent=open.length;
+ $('overviewTasks').innerHTML=open.slice(0,5).map(t=>`<div class="item"><div><strong>${esc(t.title)}</strong><small>${esc(t.due||'No due date')} · ${esc(projectName(t.businessId))}</small></div><span class="pill">${esc(t.priority)}</span></div>`).join('')||'<div class="empty">No open tasks. Add your next action.</div>';
+ const sorted=[...data.tasks].sort((a,b)=>Number(a.done)-Number(b.done));
+ $('taskList').innerHTML=sorted.map(t=>`<div class="item"><div class="grow"><strong class="${t.done?'task-done':''}">${esc(t.title)}</strong><small>${esc(projectName(t.businessId))} · ${esc(t.due||'No due date')}</small><span class="pill">${esc(t.priority)} priority</span>${t.done?'<span class="pill">Completed</span>':''}</div><div class="row"><button class="secondary" data-donetask="${esc(t.id)}">${t.done?'Undo':'Complete'}</button><button class="danger" data-deltask="${esc(t.id)}">×</button></div></div>`).join('')||'<div class="empty">No tasks yet.</div>';
+}
+function renderReports(){
+ const month=$('reportMonth').value||todayLocal().slice(0,7),items=data.transactions.filter(t=>(t.date||'').slice(0,7)===month);
+ const inc=items.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0),exp=items.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+ $('reportIncome').textContent=money(inc);$('reportExpense').textContent=money(exp);$('reportNet').textContent=money(inc-exp);$('reportCount').textContent=items.length;
+ $('reportDetails').innerHTML=items.length?items.sort((a,b)=>a.date.localeCompare(b.date)).map(t=>`<div class="item"><span>${esc(t.date)} · ${esc(t.description)} <span class="small">(${esc(projectName(t.businessId))})</span></span><strong class="${t.type==='income'?'green':'red'}">${t.type==='income'?'+':'−'}${money(t.amount)}</strong></div>`).join(''):'No transactions for this month.';
+}
+function renderOverview(){
+ $('todayDate').textContent=new Date().toLocaleDateString('en-ZA',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+ const pending=data.tasks.filter(t=>!t.done),due=pending.filter(t=>t.due&&t.due<=todayLocal());
+ const attention=[];
+ // Overdue tasks
+ due.forEach(t=>{
+  attention.push(
+   `<div class="item">
+    <div><strong class="red">Overdue task</strong>
+    <small>${esc(t.title)} — ${esc(t.due)}</small></div>
+   </div>`
+  );
+ });
+ // Projects needing attention
+ data.businesses.filter(b=>['Planning','Paused'].includes(b.status)).forEach(b=>{
+  attention.push(
+   `<div class="item">
+    <div><strong class="yellow">${esc(b.status)} project</strong>
+    <small>${esc(b.name)} — ${esc(b.description)}</small></div>
+   </div>`
+  );
+ });
+ $('attentionCentre').innerHTML=attention.length
+  ?attention.join('')
+  :'<div class="notice">All clear! No overdue tasks or paused/planning projects requiring attention.</div>';
+ $('dailyBriefing').innerHTML=due.length?`<p>${due.length} task(s) are due today or overdue.</p>`:pending.length?`<p>${pending.length} open task(s). Choose one useful action to move a project forward.</p>`:'<p>No open tasks. Add one small next action when ready.</p>';
+}
+function renderBackup(){$('storageInfo').textContent=`Projects: ${data.businesses.length} · Transactions: ${data.transactions.length} · Tasks: ${data.tasks.length}. Stored locally in this browser. Storage key: ${KEY}.`}
+function render(){renderBusinesses();renderMoney();renderTasks();renderOverview();renderReports();renderBackup()}
+$('businessForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const name=$('businessName').value.trim();
+ if(!name)return;
+ data.businesses.push({
+  id:makeId(),
+  name,
+  description:$('businessDescription').value.trim(),
+  status:$('businessStatus').value,
+  progress:Math.max(0,Math.min(100,Number($('businessProgress').value)||0)),
+  notes:$('businessNotes').value.trim()
+ });
+ if(saveData()){e.target.reset();render()}
+});
+$('transactionDate').value=todayLocal();$('reportMonth').value=todayLocal().slice(0,7);
+$('transactionForm').addEventListener('submit',e=>{e.preventDefault();const amount=Number($('transactionAmount').value),description=$('transactionDescription').value.trim();if(!(amount>0)||!description)return;data.transactions.push({id:makeId(),type:$('transactionType').value,amount,description,date:$('transactionDate').value||todayLocal(),businessId:$('transactionBusiness').value});if(saveData()){e.target.reset();$('transactionDate').value=todayLocal();render()}});
+$('taskForm').addEventListener('submit',e=>{e.preventDefault();const title=$('taskTitle').value.trim();if(!title)return;data.tasks.push({id:makeId(),title,businessId:$('taskBusiness').value,priority:$('taskPriority').value,due:$('taskDue').value,done:false});if(saveData()){e.target.reset();render()}});
+$('reportMonth').addEventListener('change',renderReports);
+document.addEventListener('click',e=>{
+ const t=e.target;
+ if(t.dataset.delbiz){if(!confirm('Delete this project? Related transactions and tasks will remain.'))return;data.businesses=data.businesses.filter(b=>b.id!==t.dataset.delbiz);saveData();render()}
+ if(t.dataset.editbiz){
+  const b=data.businesses.find(x=>x.id===t.dataset.editbiz);if(!b)return;
+  const name=prompt('Project name:',b.name);if(name===null)return;if(!name.trim())return alert('Project name cannot be empty.');
+  const description=prompt('Project description:',b.description||'');if(description===null)return;
+  const notes=prompt('Project notes (do not enter passwords or banking details):',b.notes||'');if(notes===null)return;
+  const status=prompt('Status: Active, Planning, Paused or Completed',b.status||'Active');if(status===null)return;
+  const progressInput=prompt('Project progress (0–100):',String(Math.max(0,Math.min(100,Number(b.progress)||0))));
+  if(progressInput===null)return;
+  const progress=Number(progressInput);
+  if(!Number.isFinite(progress)||progress<0||progress>100)return alert('Enter a number between 0 and 100.');
+  b.name=name.trim();
+  b.description=description.trim();
+  b.notes=notes.trim();
+  b.status=['Active','Planning','Paused','Completed'].includes(status)?status:'Active';
+  b.progress=progress;
+  saveData();render();
+ }
+ if(t.dataset.deltx){if(!confirm('Delete this transaction?'))return;data.transactions=data.transactions.filter(x=>x.id!==t.dataset.deltx);saveData();render()}
+ if(t.dataset.donetask){const task=data.tasks.find(x=>x.id===t.dataset.donetask);if(task)task.done=!task.done;saveData();render()}
+ if(t.dataset.deltask){if(!confirm('Delete this task?'))return;data.tasks=data.tasks.filter(x=>x.id!==t.dataset.deltask);saveData();render()}
+});
+function getCommand(){return $('commandSelect').value+($('extraCommand').value.trim()?'\n\nAdditional instructions: '+$('extraCommand').value.trim():'')+'\n\nContext: I am in South Africa and my starting budget is R0. Use free tools only. Do not recommend deposits, paid subscriptions, paid APIs, activation fees or guaranteed-income schemes. Give practical, honest, step-by-step advice.'}
+$('askAI').addEventListener('click',()=>window.open('https://chatgpt.com/?q='+encodeURIComponent(getCommand()),'_blank','noopener'));
+$('copyAI').addEventListener('click',async()=>{const txt=getCommand();try{await navigator.clipboard.writeText(txt);alert('JARVIS command copied.')}catch(e){const box=document.createElement('textarea');box.value=txt;document.body.appendChild(box);box.select();document.execCommand('copy');box.remove();alert('JARVIS command copied if clipboard access is available.')}});
+$('exportBackup').addEventListener('click',()=>{
+ const backup={app:'JARVIS',version:3,exportedAt:new Date().toISOString(),businesses:data.businesses,transactions:data.transactions,tasks:data.tasks};
+ const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download='jarvis-build-003-backup-'+todayLocal()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+$('restoreBackup').addEventListener('click',()=>{
+ const file=$('restoreFile').files[0];if(!file)return alert('Choose a JARVIS JSON backup first.');
+ const reader=new FileReader();reader.onload=()=>{
+  try{const backup=JSON.parse(reader.result);if(!backup||!Array.isArray(backup.businesses)||!Array.isArray(backup.transactions)||!Array.isArray(backup.tasks))throw new Error('This file does not contain the expected JARVIS records.');
+   if(!confirm('Restore this backup? It will replace the records currently in this browser. Export your current records first.'))return;
+   const previous=data;data=normaliseData(backup);if(saveData()){localStorage.setItem(SEED_KEY,'yes');alert('JARVIS backup restored.');render()}else data=previous;
+  }catch(err){alert('Could not restore backup: '+err.message)}
+ };reader.readAsText(file);
+});
+render();
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+</script>
+</body>
+</html>
